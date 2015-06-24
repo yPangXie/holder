@@ -367,6 +367,8 @@ function parseQueryString(url, holder) {
 
         holder.auto = utils.truthy(options.auto);
 
+        holder.twd = utils.truthy(options.twd);
+
         holder.outline = utils.truthy(options.outline);
 
         if (utils.truthy(options.random)) {
@@ -633,7 +635,11 @@ function buildSceneGraph(scene) {
         weight: scene.theme.fontweight ? scene.theme.fontweight : 'bold'
     };
 
-    scene.text = scene.theme.text || Math.floor(scene.width) + 'x' + Math.floor(scene.height);
+    if(scene.flags.twd && scene.theme.text) {
+        scene.text = scene.theme.text + ' ['+ Math.floor(scene.width) + 'x' + Math.floor(scene.height) +']'
+    } else {
+        scene.text = scene.theme.text || Math.floor(scene.width) + 'x' + Math.floor(scene.height);
+    }
 
     scene.noWrap = scene.theme.nowrap || scene.flags.nowrap;
 
@@ -641,11 +647,19 @@ function buildSceneGraph(scene) {
 
     switch (scene.flags.textmode) {
         case 'literal':
-            scene.text = scene.flags.dimensions.width + 'x' + scene.flags.dimensions.height;
+            if(scene.flags.twd && scene.theme.text) {
+                scene.text = scene.theme.text + ' ['+ scene.flags.dimensions.width + 'x' + scene.flags.dimensions.height +']'
+            } else {
+                scene.text = scene.flags.dimensions.width + 'x' + scene.flags.dimensions.height;
+            }
             break;
         case 'exact':
             if (!scene.flags.exactDimensions) break;
-            scene.text = Math.floor(scene.flags.exactDimensions.width) + 'x' + Math.floor(scene.flags.exactDimensions.height);
+            if(scene.flags.twd && scene.theme.text) {
+                scene.text = scene.theme.text + ' ['+ Math.floor(scene.flags.exactDimensions.width) + 'x' + Math.floor(scene.flags.exactDimensions.height) +']'
+            } else {
+                scene.text = Math.floor(scene.flags.exactDimensions.width) + 'x' + Math.floor(scene.flags.exactDimensions.height);
+            }
             break;
     }
 
